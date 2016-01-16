@@ -1,0 +1,21 @@
+{
+  "name": "DojoChatServer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "brian@btmatthews.com",
+  "license": "ASL",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.3",
+    "express-mailer": "^0.3.0",
+    "express-session": "^1.13.0",
+    "jade": "^1.11.0",
+    "nconf": "^0.8.2",
+    "sqlite3": "^3.1.1",
+    "uuid": "^2.0.1"
+  }
+}
