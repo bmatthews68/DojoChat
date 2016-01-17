@@ -1,9 +1,3 @@
-var fs = require('fs');
-var file = 'chat.db';
-var exists = fs.existsSync(file);
-var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database(file);
-
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
@@ -11,77 +5,146 @@ var mailer = require('express-mailer');
 var uuid = require('uuid');
 var nconf = require('nconf');
 
- db.serialize(function() {
-   if (!exists) {
-    db.run('create table users (nickname text, full_name text, email_address text, password text, otp_token text, otp_expiry integer)');
-  }
+// Load the sequelize
+
+var Sequelize = require("sequelize");
+
+// Open a sqlite3 database
+
+var sequelize = new Sequelize('dojochat', '', '', {
+  dialect: 'sqlite',
+  storage: 'dojochat.db'
 });
 
-nconf.env().argv().file({ file: 'config.json' });
+// Define the data model for user objects
 
-mailer.extend(app, {
+var User = sequelize.define('user', {
+  nickname: { type: Sequelize.STRING, field: 'nickname', allowNull: false, primaryKey: true },
+  fullName: { type: Sequelize.STRING, field: 'full_name', allowNull: false },
+  emailAddress: { type: Sequelize.STRING, field: 'email_address', allowNull: false, unique: true },
+  password: { type: Sequelize.STRING, field: 'password' },
+  otpToken: { type: Sequelize.STRING, field: 'otp_token' },
+  otpExpiry: { type: Sequelize.INTEGER, field: 'otp_expiry' }
+});
+
+// Make sure the underlying tables for the user objects exist
+
+sequelize.sync();
+
+// Load the configuration properties from environment variable, command line arguments and 
+// the configuration file named config.json. For default values we are specifying the details
+// for Google Mail.
+
+nconf
+  .env()
+  .argv()
+  .file({ file: 'config.json' })
+  .defaults({
+    mailer: {
+      host: 'smtp.gmail.com',
+      secure: true,
+      port: 465
+    }  
+  });
+
+// Configure the express-mailer module which is used to send e-mails to users during registration,
+// and password reset operations.
+
+var mailer_config = {
   from: nconf.get('mailer:from'),
   host: nconf.get('mailer:host'),
-  secureConnection: true,
-  port: 465,
+  secureConnection: nconf.get('mailer:secure'),
+  port: nconf.get('mailer:port'), 
   transportMethod: 'SMTP',
   auth: {
     user: nconf.get('mailer:username'),
     pass: nconf.get('mailer:password')
   }
-});
+};
+
+mailer.extend(app, mailer_config);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Set the location of view and e-mail templates to the the ./views
+// sub-directory.
+
 app.set('views', __dirname + '/views');
+
+// Set the template engine that we will use for view and e-mail templates
+// to Jade.
+
 app.set('view engine', 'jade');
 
 var port = process.env.PORT || 8080;
 
 var router = express.Router();
 
+// Handle the HTTP POST request to /api/registrations which is used by clients when registering
+// a new user.
+
 router.post('/registrations', function(req, res) {
+  
+  // Handle any error parsing the request payload by returning status code 400 (Bad Request)
+  // and an error payload. 
+  
   if (!req.body) {
     res.status(400).json({ result: 'ERROR' });
     return;
   }
+  
   var user = {
+  
+    // Copy the new user's full name, nickname and e-mail address from the request payload.
+  
     fullName: req.body.fullName,
     nickname: req.body.nickname,
     emailAddress: req.body.emailAddress,
-    otp: {
-      token: uuid.v1(),
-      expiry: Date.now() + 3600000
-    }
+  
+    // Generate a globally unique one-time password token that will expire in 1 hr
+  
+    otpToken: uuid.v1(), 
+    otpExpiry: Date.now() + 3600000
   };
 
-  db.serialize(function() {
-    var stmt = db.prepare('insert into users (nickname, full_name, email_address, otp_token, otp_expiry) values (?, ?, ?, ?, ?)');
-    stmt.run(user.nickname, user.fullName, user.emailAddress, user.otp.token, user.otp.expiry, function(err) {
-      if (err) {
-        console.log(err);
-        res.status(500).json({ result: 'ERROR' });
-      } else {
-        app.mailer.send('registration_mail', {
-          to: user.emailAddress,
-          subject: 'Dojo Chat registration',
-          fullName: user.fullName,
-          nickname: user.nickname,
-          token: user.otp.token
-        }, function (err) {
-          if (err) {
-            console.log(err);
-            res.status(500).json({ result: 'ERROR' });
-            return;
-          }
-          console.log('Registered ' + user.otp.token);
-          res.json({ result: 'OK', nickname: user.nickname, token: user.otp.token });
-        });
-      }
+  User.create(user)
+    .then(function(user) {
+
+      // Send an email using the ./views/registration_mail.jade template and send it to the new user's
+      // e-mail address. Also the new user's full name and nickname and the one-time password token
+      // are made available for use in the e-mail template.
+
+      var mail_options = {
+        to: user.emailAddress,
+        subject: 'Dojo Chat registration',
+        fullName: user.fullName,
+        nickname: user.nickname,
+        token: user.otpToken
+      };
+
+      app.mailer.send('registration_mail', mail_options, function (err) {
+
+        // Handle any error sending the e-mail by returning status code 500 (Internal Server Error)
+        // and an error payload.
+
+        if (err) {
+          console.log(err);
+          res.status(500).json({ result: 'ERROR' });
+          return;
+        }
+        
+        // Otherwise, return status code 200 (OK) by default with an success payload containing
+        // the result code, nickname and one-time password token.
+        
+        res.json({ result: 'OK', nickname: user.nickname, token: user.otpToken });
+      });
+    })
+    .catch(function(err) {
+      // Handle any error storing the user record in the database by returning status code 
+      // 500 (Internal Server Error) and an error payload.
+      res.status(500).json({ result: 'ERROR' });
     });
-    stmt.finalize();
-  });
 });
 
 router.put('/registrations/:token', function(req, res) {
@@ -89,21 +152,24 @@ router.put('/registrations/:token', function(req, res) {
     res.status(400).json({ result: 'OK' });
     return;
   }
-  db.serialize(function() {
-    var stmt = db.prepare('update users set otp_token = null, otp_expiry = null, password = ? where otp_token = ? and otp_expiry > ?');
-    stmt.run(req.body.password, req.params.token, Date.now(), function(err) {
-      if (err) {
-        console.log(err);
-        res.status(500).json({ result: 'ERROR' });
-      } else {
-        if (this.changes > 0) {
-          res.status(200).json({ result: 'OK' });
-        } else {
-          res.status(404).json({ result: 'ERROR' });
-        }
-      }
-    });
-    stmt.finalize();
+  User.update({
+    password: req.body.password,
+    otpToken: null,
+    otpExpiry: null
+  }, {
+    where: {
+      otpToken: req.params.token,
+      otpExpiry: { $gt: Date.now() }
+    }
+  }).then(function(rows){
+    if (rows[0] == 0) {
+      res.status(404).json({ result: 'ERROR' });
+      return;
+    }
+    res.json({ result: 'OK' });
+  }).catch(function(err){
+    console.log(err);
+    res.status(500).json({ result: 'ERROR' });
   });
 });
 
@@ -112,19 +178,27 @@ router.post("/login", function(req, res) {
     res.status(400).json({ result: 'ERROR'});
     return;
   }
-  var username = req.body.username;
-  var password = req.body.password;
-  for (var i = 0; i < users.length; ++i) {
-    if (users[i].nickname === username || users[i].emailAddress === username) {
-      if (users[i].password === password) {
-        res.json({ result: 'OK'});
-      } else {
-        res.status(401).json({ result: 'ERROR' });
-      }
+  User.count({
+    where: {
+      $and: [{
+        $or: [
+          { nickname: req.body.username },
+          { emailAddress: req.body.username }
+        ]
+      }, {
+        password: req.body.password
+      }]
+    }
+  }).then(function(count) {
+    if (count === 0) {
+      res.status(401).json({ result: 'ERROR' });
       return;
     }
-  }
-  res.status(404).json({ result: 'ERROR' });
+    res.json({ result: 'OK' });
+  }).catch(function(err) {
+    console.log(err);
+    res.status(500).json({ result: 'ERROR' });
+  })
 });
 
 app.use('/api', router);

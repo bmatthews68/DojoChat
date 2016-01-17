@@ -10,11 +10,13 @@
   "license": "ASL",
   "dependencies": {
     "body-parser": "^1.14.2",
+    "connect-session-sequelize": "^3.0.0",
     "express": "^4.13.3",
     "express-mailer": "^0.3.0",
     "express-session": "^1.13.0",
     "jade": "^1.11.0",
     "nconf": "^0.8.2",
+    "sequelize": "^3.17.3",
     "sqlite3": "^3.1.1",
     "uuid": "^2.0.1"
   }
