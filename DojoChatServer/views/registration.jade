@@ -8,14 +8,17 @@ html(lang="en")
   body
     div(class="container")
       div(class="row")
-        h1 Set Password
+        h1 Registration
         form
           div(class="control-group", style="margin-bottom:12px")
-            label(class="control-label") Password
-            input(class="form-control", type="password", name="password")
+            label(class="control-label") Full name
+            input(class="form-control", type="text", name="fullName")
           div(class="control-group", style="margin-bottom:12px")
-            label(class="control-label") Confirm password
-            input(class="form-control", type="password", name="confirm_password")
+            label(class="control-label") Nickname
+            input(class="form-control", type="text", name="nickname")
+          div(class="control-group", style="margin-bottom:12px")
+            label(class="control-label") E-mail address
+            input(class="form-control", type="text", name="emailAddres")
           div
-            button(class="btn btn-primary") Set Password
+            button(class="btn btn-primary") Register
   script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js", integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS", crossorigin="anonymous")

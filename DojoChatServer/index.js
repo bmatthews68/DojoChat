@@ -1,4 +1,5 @@
 var express = require('express');
+var session = require('express-session');
 var app = express();
 var bodyParser = require('body-parser');
 var mailer = require('express-mailer');
@@ -66,6 +67,17 @@ mailer.extend(app, mailer_config);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.disable('x-powered-by');
+
+app.use(session({
+  genid: function() {
+    return uuid.v1();
+  },
+  resave: false,
+  saveUninitialized: true,
+  secret: 'YgZLfe24sqzEkUrb7eQ263e5'
+}));
 
 // Set the location of view and e-mail templates to the the ./views
 // sub-directory.
@@ -173,12 +185,112 @@ router.put('/registrations/:token', function(req, res) {
   });
 });
 
+// 'users' resource
+
+router.get("/users", function(req, res) {
+  var offset = req.query.offset || 0;
+  var limit = req.query.limit || 1000;
+  User.findAll({
+    offset: offset,
+    limit: limit,
+    attributes: [ 'fullName', 'nickname', 'emailAddress' ],
+    order: 'fullName asc'  
+  }).then(function(rows) {
+    res.json({ result: 'OK', offset: offset, users: rows });
+  }).catch(function(err) {
+    res.status(500).json({ result: 'OK' });
+  });
+});
+
+router.post("/users", function(req, res) {
+  if (!req.body) {
+    res.status(400).json({ result: 'ERROR' });
+    return;
+  }
+  var user = {
+    nickname: req.body.nickname,
+    fullName: req.body.fullName,
+    emailAddress: req.body.emailAddress
+  };
+  User.create(user).then(function(user) {
+    res.json({ result: 'OK' });
+  }).catch(function(err) {
+    res.status(500).json({ result: 'ERROR' });
+  });
+});
+
+router.get("/users/:username", function(req, res) {
+  User.findOne({
+    attributes: [ 'fullName', 'nickname', 'emailAddress' ],
+    where: {
+      $or: [
+        { nickname: req.params.username },
+        { email_address: req.params.username }
+      ]
+    }
+  }).then(function(user) {
+    if (user) {
+      res.json({ result: 'OK', user: user });
+    } else {
+      res.status(404).json({ result: 'ERROR' });
+    }
+  }).catch(function(err){
+    res.status(500).json({ result: 'OK' });
+  });
+});
+
+router.put("/users/:username", function(req, res) {
+  if (!req.body) {
+    res.status(400).json({ result: 'ERROR' });
+    return;
+  }
+  var user = { };
+  if (req.body.nickname) { user.nickname = req.body.nickname; }
+  if (req.body.fullName) { user.fullName = req.body.fullName; }
+  if (req.body.emailAddress) { user.emailAddress= req.body.emailAddress; }
+  User.update(user, {
+    where: {
+      $or: [
+        { nickname: req.params.username },
+        { email_address: req.params.username }
+      ]
+    }
+  }).then(function(rows) {
+    if (rows[0] === 0) {
+      res.status(404).json({ result: 'ERROR' });
+      return;
+    }
+    res.json({ result: 'OK' });
+  }).catch(function(err) {
+    res.status(500).json({ result: 'ERROR' });
+  })
+});
+
+router.delete("/users/:username", function(req, res) {
+  User.destroy({
+    where: {
+      $or: [
+        { nickname: req.params.username },
+        { email_address: req.params.username }
+      ]
+    }
+  }).then(function(count) {
+    if (count === 0) {
+      res.status(404).json({ result: 'ERROR' });
+      return;
+    }
+    res.json({ result: 'OK' });
+  }).catch(function(err) {
+    res.status(500).json({ result: 'ERROR' });
+  });
+});
+
 router.post("/login", function(req, res) {
   if (!req.body) {
     res.status(400).json({ result: 'ERROR'});
     return;
   }
-  User.count({
+  User.findAndCount({
     where: {
       $and: [{
         $or: [
@@ -189,11 +301,12 @@ router.post("/login", function(req, res) {
         password: req.body.password
       }]
     }
-  }).then(function(count) {
-    if (count === 0) {
+  }).then(function(result) {
+    if (result.count === 0) {
       res.status(401).json({ result: 'ERROR' });
       return;
     }
+    req.session.user = result.rows[0].user;
     res.json({ result: 'OK' });
   }).catch(function(err) {
     console.log(err);
@@ -201,7 +314,27 @@ router.post("/login", function(req, res) {
   })
 });
 
+router.get("/profile", function(req, res) {
+  if (req.session.user) {
+    req.json({ result: 'OK', user: req.session.user });
+  } else {
+    res.status(401).json({ result: 'ERROR' });
+  }
+});
+
 app.use('/api', router);
+
+app.get("/", function(req, res) {
+  res.render('index');
+});
+
+app.get("/login.html", function(req, res) {
+  res.render('login');
+});
+
+app.get("/set_password.html", function(req, res) {
+  res.render('set_password', { token: req.query.token });
+});
 
 app.listen(port);
 console.log('Dojo Chat Server running on port ' + port);
