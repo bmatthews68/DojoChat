@@ -9,8 +9,7 @@ COPY package.json .
 RUN npm install
 
 COPY config.json .
-COPY index.js .
-COPY views .
+ADD dojochat.tar.gz .
 
 EXPOSE 8080
 
