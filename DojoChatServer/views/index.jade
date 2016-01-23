@@ -37,6 +37,9 @@ html(lang="en", ng-app="chatApp")
           input(class="form-control", type="text", name="emailAddres", ng-model="registrationForm.emailAddress")
         div
           button(class="btn btn-primary", ng-click="submit()") Register
+    script(type="text/ng-template", id="view/registered.html")
+      h1 Registration
+      p You will soon receive an e-mail containing a link that you must click to complete the registration process.
     script(type="text/ng-template", id="view/set_password.html")
       h1 Set Password
       form(ng-controller="setPasswordCtrl")

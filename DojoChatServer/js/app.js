@@ -13,6 +13,8 @@
     }).when('/registration', {
       templateUrl: 'view/registration.html',
       controller: 'registrationCtrl'
+    }).when('/registered', {
+      templateUrl: 'view/registered.html'
     }).when('/set_password', {
       templateUrl: 'view/set_password.html',
       controller: 'setPasswordCtrl'
@@ -21,12 +23,14 @@
     });
   }]);
 
-  angular.module('chatApp').controller('mainCtrl', ['$scope', function($scope) {
+  angular.module('chatApp').controller('mainCtrl', ['$scope', '$location', 'sessionService', function($scope, $location, sessionService) {
   	$scope.logout = function() {
+  	  sessionService.logout();
+  	  $location.path("/login");
   	};
   }]);
 
-  angular.module('chatApp').controller('loginCtrl', ['$scope', 'sessionService', function($scope, sessionService) {
+  angular.module('chatApp').controller('loginCtrl', ['$scope', '$location', 'sessionService', function($scope, $location, sessionService) {
     $scope.loginForm = {};
     $scope.submit = function() {
       sessionService.login($scope.loginForm, handleResponse, handleError);
@@ -34,6 +38,7 @@
 
     function handleResponse(response) {
       if (response.result === 'OK') {
+      	$location.path("/main");
       } else {
         handleError({});
       }
@@ -64,7 +69,7 @@
 	}
   }]);
 
-  angular.module('chatApp').controller('setPasswordCtrl', ['$scope', '$routeParams', 'registrationService', function($scope, $routeParams, registrationService) {
+  angular.module('chatApp').controller('setPasswordCtrl', ['$scope', '$routeParams', '$location', 'registrationService', function($scope, $routeParams, registrationService) {
   	$scope.setPasswordForm = {};
   	$scope.submit = function() {
       registrationService.complete(
@@ -76,7 +81,7 @@
 
   	function handleResponse(response) {
   	  if (response.result === 'OK') {
-        
+        $location.path('/login');
   	  } else {
   		handleError({});
       }
@@ -84,6 +89,7 @@
 
   	function handleError(err) {	
   	  $scope.setPasswordForm.password = '';
+  	  $scope.setPasswordForm.confirmPassword = '';
   	}
   }]);
 })();
