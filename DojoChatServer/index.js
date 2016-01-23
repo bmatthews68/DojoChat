@@ -41,6 +41,7 @@ nconf
   .argv()
   .file({ file: 'config.json' })
   .defaults({
+    baseUrl: 'http://localhost:8080',
     mailer: {
       host: 'smtp.gmail.com',
       secure: true,
@@ -64,6 +65,8 @@ var mailer_config = {
 };
 
 mailer.extend(app, mailer_config);
+
+app.use("/js", express.static(__dirname + '/js'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -132,6 +135,7 @@ router.post('/registrations', function(req, res) {
         subject: 'Dojo Chat registration',
         fullName: user.fullName,
         nickname: user.nickname,
+        baseUrl: nconf.get('baseUrl'),
         token: user.otpToken
       };
 
@@ -285,7 +289,7 @@ router.delete("/users/:username", function(req, res) {
   });
 });
 
-router.post("/login", function(req, res) {
+router.post("/sessions", function(req, res) {
   if (!req.body) {
     res.status(400).json({ result: 'ERROR'});
     return;
@@ -314,6 +318,16 @@ router.post("/login", function(req, res) {
   })
 });
 
+router.delete("/sessions/:id", function(req, res) {
+  req.session.destroy(function(err) {
+    if (err) {
+      res.status(500).json({ result: 'ERROR' });
+      return;
+    }
+    res.json({ result: 'OK' });
+  });
+});
+
 router.get("/profile", function(req, res) {
   if (req.session.user) {
     req.json({ result: 'OK', user: req.session.user });
@@ -324,16 +338,12 @@ router.get("/profile", function(req, res) {
 
 app.use('/api', router);
 
-app.get("/", function(req, res) {
-  res.render('index');
-});
-
-app.get("/login.html", function(req, res) {
-  res.render('login');
-});
-
-app.get("/set_password.html", function(req, res) {
-  res.render('set_password', { token: req.query.token });
+app.get("*.html", function(req, res) {
+//  if (req.session.user) {
+    res.render('index');
+//  } else {
+//    res.redirect("/index.html#/login")
+//  }
 });
 
 app.listen(port);
