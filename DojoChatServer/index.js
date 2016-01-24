@@ -338,12 +338,20 @@ router.get("/profile", function(req, res) {
 
 app.use('/api', router);
 
-app.get("*.html", function(req, res) {
-//  if (req.session.user) {
+app.get("/login.html", function(req, res) {
+  res.render('login');
+});
+
+app.get('/registration.html', function(req, res) {
+  res.render('registration');
+});
+
+app.get("/index.html", function(req, res) {
+  if (req.session.user) {
     res.render('index');
-//  } else {
-//    res.redirect("/index.html#/login")
-//  }
+  } else {
+    res.redirect("/login.html")
+  }
 });
 
 app.listen(port);

@@ -1,0 +1,46 @@
+doctype html
+html(lang="en", ng-app="chatRegistrationApp")
+  head
+    meta(http-equiv="Content-Type", content="text/html; charset=UTF-8")
+    title Dojo Chat
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css", integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7", crossorigin="anonymous")
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css", integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r", crossorigin="anonymous")
+  body
+    div(class="container")
+      div(class="row")
+        div(ng-view)
+    script(type="text/ng-template", id="view/registration.html")
+      h1 Registration
+      form(ng-controller="registrationCtrl")
+        div(class="control-group", style="margin-bottom:12px")
+          label(class="control-label") Full name
+          input(class="form-control", type="text", name="fullName", ng-model="registrationForm.fullName")
+        div(class="control-group", style="margin-bottom:12px")
+          label(class="control-label") Nickname
+          input(class="form-control", type="text", name="nickname", ng-model="registrationForm.nickname")
+        div(class="control-group", style="margin-bottom:12px")
+          label(class="control-label") E-mail address
+          input(class="form-control", type="text", name="emailAddres", ng-model="registrationForm.emailAddress")
+        div
+          button(class="btn btn-primary", ng-click="submit()") Register
+    script(type="text/ng-template", id="view/registered.html")
+      h1 Registration
+      p You will soon receive an e-mail containing a link that you must click to complete the registration process.
+    script(type="text/ng-template", id="view/set_password.html")
+      h1 Set Password
+      form(ng-controller="setPasswordCtrl")
+        div(class="control-group", style="margin-bottom:12px")
+          label(class="control-label") Password
+          input(class="form-control", type="password", name="password", ng-model="setPasswordForm.password")
+        div(class="control-group", style="margin-bottom:12px")
+          label(class="control-label") Confirm password
+          input(class="form-control", type="password", name="confirmPassword", ng-model="setPasswordForm.confirmPassword")
+        div
+          button(class="btn btn-primary", type="submit", ng-click="submit()") Set Password
+  script(src="https://code.jquery.com/jquery-1.12.0.min.js")
+  script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js", integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS", crossorigin="anonymous")
+  script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js")
+  script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-resource.min.js")
+  script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-route.min.js")
+  script(src="/js/registration.js")
+  script(src="/js/services.js")
