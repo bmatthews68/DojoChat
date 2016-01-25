@@ -11,6 +11,8 @@ npm install -g grunt-cli
 
 npm install --save body-parser express express-mailer express-session jade nconf sqlite3 uuid
 
+npm install --save sequelize connect-session-sequelize
+
 Storing data
 
 During prototyping we will be using SQLite 3 to store data. 

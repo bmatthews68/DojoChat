@@ -1,3 +1,6 @@
 node_modules/
 *.db
 config.json
+
+DojoChatApp2/platforms/android
+DojoChatApp2/platforms/browser
