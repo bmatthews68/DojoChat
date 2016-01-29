@@ -1,6 +1,14 @@
+.idea/
+.gradle/
 node_modules/
+*.iml
 *.db
 config.json
+.DS_Store
+
+DojoChatApp/local.properties
+DojoChatApp/build
+DojoChatApp/captures
 
 DojoChatApp2/platforms/android
 DojoChatApp2/platforms/browser
