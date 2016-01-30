@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.coderdojowarehouse.dojochatapp">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +13,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.NoDisplay">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -19,8 +21,25 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="Dojo Chat Login"
+            android:label="@string/login_title"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".BeginRegistrationActivity"
+            android:label="@string/begin_registration_title"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CompleteRegistrationActivity"
+            android:label="@string/complete_registration_title"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="chat.coderdojowarehouse.com"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

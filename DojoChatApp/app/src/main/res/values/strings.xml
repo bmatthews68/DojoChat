@@ -6,4 +6,20 @@
     <string name="password_label">Password</string>
     <string name="login_button">Login</string>
     <string name="register_button">Register</string>
+
+    <string name="begin_registration_title">Dojo Chat Registration</string>
+    <string name="fullname_label">Full name</string>
+    <string name="nickname_label">Nickname</string>
+    <string name="email_address_label">Email address</string>
+    <string name="begin_button">Begin</string>
+    <string name="cancel_button">Cancel</string>
+
+    <string name="complete_registration_title">Dojo Chat Finish Registration</string>
+    <string name="confirm_password_label">Confirm password</string>
+    <string name="finish_button">Finish</string>
+
+    <string name="invalid_credentials_err">Invalid username or password</string>
+    <string name="login_failed_err">Error occurred during login</string>
+    <string name="invalid_registration_token_err">Invalid or expired registration token</string>
+    <string name="registration_failed_err">Error occurred during registration</string>
 </resources>

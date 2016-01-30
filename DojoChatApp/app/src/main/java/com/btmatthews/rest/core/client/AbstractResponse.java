@@ -12,6 +12,10 @@ public abstract class AbstractResponse implements Response {
         this.result = result;
     }
 
+    public final boolean isOk() { return result.equals(OK); }
+
+    public final boolean isError() { return result.equals(ERROR); }
+
     public final String getResult() {
         return result;
     }

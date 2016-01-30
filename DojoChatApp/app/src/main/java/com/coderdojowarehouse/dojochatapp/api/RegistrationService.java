@@ -5,17 +5,17 @@ import com.coderdojowarehouse.dojochatapp.request.CompleteRegistrationRequest;
 import com.coderdojowarehouse.dojochatapp.response.BeginRegistrationResponse;
 import com.coderdojowarehouse.dojochatapp.response.CompleteRegistrationResponse;
 
-import retrofit.Call;
-import retrofit.http.Body;
-import retrofit.http.POST;
-import retrofit.http.PUT;
-import retrofit.http.Path;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
+import rx.Observable;
 
 public interface RegistrationService {
 
     @POST("/api/registrations")
-    Call<BeginRegistrationResponse> begin(@Body BeginRegistrationRequest request);
+    Observable<BeginRegistrationResponse> begin(@Body BeginRegistrationRequest request);
 
     @PUT("/api/registration/{token}")
-    Call<CompleteRegistrationResponse> complete(@Path("token") String token, @Body CompleteRegistrationRequest request);
+    Observable<CompleteRegistrationResponse> complete(@Path("token") String token, @Body CompleteRegistrationRequest request);
 }

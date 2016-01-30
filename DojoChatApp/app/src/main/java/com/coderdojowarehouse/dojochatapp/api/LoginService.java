@@ -4,17 +4,17 @@ import com.coderdojowarehouse.dojochatapp.response.LogoutResponse;
 import com.coderdojowarehouse.dojochatapp.request.LoginRequest;
 import com.coderdojowarehouse.dojochatapp.response.LoginResponse;
 
-import retrofit.Call;
-import retrofit.http.Body;
-import retrofit.http.DELETE;
-import retrofit.http.POST;
-import retrofit.http.Path;
+import retrofit2.http.Body;
+import retrofit2.http.DELETE;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
+import rx.Observable;
 
 public interface LoginService {
 
     @POST("/api/sessions")
-    Call<LoginResponse> login(@Body LoginRequest request);
+    Observable<LoginResponse> login(@Body LoginRequest request);
 
     @DELETE("/api/sessions/{token}")
-    Call<LogoutResponse> logout(@Path("token") String token);
+    Observable<LogoutResponse> logout(@Path("token") String token);
 }
