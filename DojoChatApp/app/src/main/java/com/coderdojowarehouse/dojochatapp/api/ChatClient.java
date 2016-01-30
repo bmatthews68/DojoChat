@@ -1,12 +1,12 @@
 package com.coderdojowarehouse.dojochatapp.api;
 
+import com.btmatthews.rest.core.client.SimpleResponse;
 import com.coderdojowarehouse.dojochatapp.request.BeginRegistrationRequest;
 import com.coderdojowarehouse.dojochatapp.request.CompleteRegistrationRequest;
 import com.coderdojowarehouse.dojochatapp.request.LoginRequest;
 import com.coderdojowarehouse.dojochatapp.response.BeginRegistrationResponse;
 import com.coderdojowarehouse.dojochatapp.response.CompleteRegistrationResponse;
 import com.coderdojowarehouse.dojochatapp.response.LoginResponse;
-import com.coderdojowarehouse.dojochatapp.response.LogoutResponse;
 
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
@@ -122,7 +122,7 @@ public final class ChatClient {
      * @param token
      * @return
      */
-    public Observable<LogoutResponse> logout(final String token) {
+    public Observable<SimpleResponse> logout(final String token) {
         return loginService.logout(token);
     }
 }
