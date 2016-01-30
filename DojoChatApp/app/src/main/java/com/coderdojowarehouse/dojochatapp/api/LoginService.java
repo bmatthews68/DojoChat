@@ -1,6 +1,6 @@
 package com.coderdojowarehouse.dojochatapp.api;
 
-import com.coderdojowarehouse.dojochatapp.response.LogoutResponse;
+import com.btmatthews.rest.core.client.SimpleResponse;
 import com.coderdojowarehouse.dojochatapp.request.LoginRequest;
 import com.coderdojowarehouse.dojochatapp.response.LoginResponse;
 
@@ -16,5 +16,5 @@ public interface LoginService {
     Observable<LoginResponse> login(@Body LoginRequest request);
 
     @DELETE("/api/sessions/{token}")
-    Observable<LogoutResponse> logout(@Path("token") String token);
+    Observable<SimpleResponse> logout(@Path("token") String token);
 }
