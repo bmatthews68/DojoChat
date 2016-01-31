@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 public final class MainActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // TODO Check if we have a session

@@ -2,39 +2,55 @@ package com.coderdojowarehouse.dojochatapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.btmatthews.rest.core.client.SimpleResponse;
 import com.coderdojowarehouse.dojochatapp.api.ChatClient;
+import com.mobsandgeeks.saripaar.ValidationError;
+import com.mobsandgeeks.saripaar.annotation.ConfirmPassword;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.mobsandgeeks.saripaar.annotation.Password;
+
+import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public final class CompleteRegistrationActivity extends AppCompatActivity {
+public final class CompleteRegistrationActivity extends AbstractValidatedActivity {
 
     private static final String TAG = "CompleteRegistration";
 
     private String token;
 
+    @NotEmpty
+    @Password
     @Bind(R.id.passwordEdit)
     EditText passwordText;
 
+    @NotEmpty
+    @ConfirmPassword
     @Bind(R.id.confirmPasswordEdit)
-    EditText confirmPasswordEdit;
+    EditText confirmPasswordText;
+
+    @Bind(R.id.finishButton)
+    Button finishButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_complete_registration);
 
-        ButterKnife.bind(this);
+        final String token = getIntent().getData().getQueryParameter("token");
+
+        setupValidation();
+        addValidation(passwordText);
+        addValidation(confirmPasswordText);
     }
 
     @OnClick(R.id.finishButton)
@@ -73,5 +89,15 @@ public final class CompleteRegistrationActivity extends AppCompatActivity {
     @OnClick(R.id.cancelButton)
     protected void onCancelClicked() {
         finish();
+    }
+
+    @Override
+    public void onValidationSucceeded() {
+        finishButton.setEnabled(true);
+    }
+
+    @Override
+    public void onValidationFailed(final List<ValidationError> errors) {
+        finishButton.setEnabled(false);
     }
 }

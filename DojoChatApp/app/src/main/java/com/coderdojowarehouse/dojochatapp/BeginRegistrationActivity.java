@@ -1,40 +1,54 @@
 package com.coderdojowarehouse.dojochatapp;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.coderdojowarehouse.dojochatapp.api.ChatClient;
 import com.coderdojowarehouse.dojochatapp.response.BeginRegistrationResponse;
+import com.mobsandgeeks.saripaar.ValidationError;
+import com.mobsandgeeks.saripaar.annotation.Email;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+
+import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public final class BeginRegistrationActivity extends AppCompatActivity {
+public final class BeginRegistrationActivity extends AbstractValidatedActivity {
 
     private static final String TAG = "BeginRegistration";
 
+    @NotEmpty
     @Bind(R.id.fullNameText)
     EditText fullNameText;
 
+    @NotEmpty
     @Bind(R.id.nicknameText)
     EditText nicknameText;
 
+    @NotEmpty
+    @Email
     @Bind(R.id.emailAddressText)
     EditText emailAddressText;
 
+    @Bind(R.id.beginButton)
+    Button beginButton;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_begin_registration);
 
-        ButterKnife.bind(this);
+        setupValidation();
+        addValidation(fullNameText);
+        addValidation(nicknameText);
+        addValidation(emailAddressText);
     }
 
     @OnClick(R.id.beginButton)
@@ -71,5 +85,15 @@ public final class BeginRegistrationActivity extends AppCompatActivity {
     @OnClick(R.id.cancelButton)
     protected void onCancelClicked() {
         finish();
+    }
+
+    @Override
+    public void onValidationSucceeded() {
+        beginButton.setEnabled(true);
+    }
+
+    @Override
+    public void onValidationFailed(final List<ValidationError> errors) {
+        beginButton.setEnabled(false);
     }
 }

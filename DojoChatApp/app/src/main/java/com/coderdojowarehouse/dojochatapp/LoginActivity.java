@@ -2,9 +2,6 @@ package com.coderdojowarehouse.dojochatapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,21 +10,18 @@ import android.widget.Toast;
 import com.coderdojowarehouse.dojochatapp.api.ChatClient;
 import com.coderdojowarehouse.dojochatapp.response.LoginResponse;
 import com.mobsandgeeks.saripaar.ValidationError;
-import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.HttpException;
-import retrofit2.http.HTTP;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public final class LoginActivity extends AppCompatActivity implements TextWatcher, Validator.ValidationListener {
+public final class LoginActivity extends AbstractValidatedActivity {
 
     private static final String TAG = "Login";
 
@@ -48,21 +42,16 @@ public final class LoginActivity extends AppCompatActivity implements TextWatche
     @Bind(R.id.loginButton)
     Button loginButton;
 
-    private Validator validator;
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        ButterKnife.bind(this);
+        setupValidation();
+        addValidation(usernameText);
+        addValidation(passwordText);
 
         loginButton.setEnabled(false);
-
-        validator = new Validator(this);
-        validator.setValidationListener(this);
-        usernameText.addTextChangedListener(this);
-        passwordText.addTextChangedListener(this);
     }
 
     /**
@@ -85,7 +74,7 @@ public final class LoginActivity extends AppCompatActivity implements TextWatche
                     @Override
                     public void onError(final Throwable e) {
                         if (e instanceof HttpException) {
-                            if (((HttpException)e).code() == 401) {
+                            if (((HttpException) e).code() == 401) {
                                 Toast.makeText(LoginActivity.this, R.string.invalid_credentials_err, Toast.LENGTH_LONG).show();
                                 return;
                             }
@@ -124,22 +113,7 @@ public final class LoginActivity extends AppCompatActivity implements TextWatche
     }
 
     @Override
-    public void onValidationFailed(List<ValidationError> errors) {
+    public void onValidationFailed(final List<ValidationError> errors) {
         loginButton.setEnabled(false);
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-        validator.validate(true);
     }
 }

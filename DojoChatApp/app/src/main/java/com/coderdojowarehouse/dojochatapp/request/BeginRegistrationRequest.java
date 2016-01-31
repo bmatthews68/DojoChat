@@ -23,7 +23,7 @@ public final class BeginRegistrationRequest implements Request {
         return fullName;
     }
 
-    public void setFullName(String fullName) {
+    public void setFullName(final String fullName) {
         this.fullName = fullName;
     }
 
@@ -31,7 +31,7 @@ public final class BeginRegistrationRequest implements Request {
         return nickname;
     }
 
-    public void setNickname(String nickname) {
+    public void setNickname(final String nickname) {
         this.nickname = nickname;
     }
 
@@ -39,7 +39,7 @@ public final class BeginRegistrationRequest implements Request {
         return emailAddress;
     }
 
-    public void setEmailAddress(String emailAddress) {
+    public void setEmailAddress(final String emailAddress) {
         this.emailAddress = emailAddress;
     }
 }

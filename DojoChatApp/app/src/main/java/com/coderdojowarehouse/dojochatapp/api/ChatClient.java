@@ -6,6 +6,7 @@ import com.coderdojowarehouse.dojochatapp.request.CompleteRegistrationRequest;
 import com.coderdojowarehouse.dojochatapp.request.LoginRequest;
 import com.coderdojowarehouse.dojochatapp.response.BeginRegistrationResponse;
 import com.coderdojowarehouse.dojochatapp.response.LoginResponse;
+import com.coderdojowarehouse.dojochatapp.response.UsersResponse;
 
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
@@ -116,6 +117,10 @@ public final class ChatClient {
      * @return
      */
     public Observable<SimpleResponse> logout(final String token) {
-        return loginService.logout(token);
+        return loginService.logout(token, token);
+    }
+
+    public Observable<UsersResponse> friends(final String token) {
+        return friendService.friends(token);
     }
 }
