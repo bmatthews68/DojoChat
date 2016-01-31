@@ -27,7 +27,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class LoginActivity extends AppCompatActivity implements TextWatcher, Validator.ValidationListener {
+public final class LoginActivity extends AppCompatActivity implements TextWatcher, Validator.ValidationListener {
 
     private static final String TAG = "Login";
 

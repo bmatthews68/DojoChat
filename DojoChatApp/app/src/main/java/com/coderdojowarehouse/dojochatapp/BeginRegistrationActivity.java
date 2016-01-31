@@ -6,9 +6,7 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.btmatthews.rest.core.client.Response;
 import com.coderdojowarehouse.dojochatapp.api.ChatClient;
-import com.coderdojowarehouse.dojochatapp.request.BeginRegistrationRequest;
 import com.coderdojowarehouse.dojochatapp.response.BeginRegistrationResponse;
 
 import butterknife.Bind;
@@ -18,7 +16,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class BeginRegistrationActivity extends AppCompatActivity {
+public final class BeginRegistrationActivity extends AppCompatActivity {
 
     private static final String TAG = "BeginRegistration";
 

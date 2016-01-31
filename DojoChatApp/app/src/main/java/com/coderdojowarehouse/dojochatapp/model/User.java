@@ -1,6 +1,6 @@
 package com.coderdojowarehouse.dojochatapp.model;
 
-public class User {
+public final class User {
 
     private String fullName;
 

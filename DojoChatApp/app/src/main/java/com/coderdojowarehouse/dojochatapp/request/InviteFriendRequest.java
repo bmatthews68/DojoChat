@@ -2,7 +2,7 @@ package com.coderdojowarehouse.dojochatapp.request;
 
 import com.btmatthews.rest.core.client.Request;
 
-public class InviteFriendRequest implements Request {
+public final class InviteFriendRequest implements Request {
 
     private String to;
 

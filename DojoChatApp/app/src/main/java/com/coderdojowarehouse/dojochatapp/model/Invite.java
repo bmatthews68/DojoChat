@@ -1,6 +1,6 @@
 package com.coderdojowarehouse.dojochatapp.model;
 
-public class Invite {
+public final class Invite {
 
     private String invite;
 

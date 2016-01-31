@@ -5,7 +5,7 @@ import com.coderdojowarehouse.dojochatapp.model.User;
 
 import java.util.List;
 
-public class UsersResponse extends AbstractResponse {
+public final class UsersResponse extends AbstractResponse {
 
     private List<User> users;
 

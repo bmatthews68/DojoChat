@@ -5,7 +5,6 @@ import com.coderdojowarehouse.dojochatapp.request.BeginRegistrationRequest;
 import com.coderdojowarehouse.dojochatapp.request.CompleteRegistrationRequest;
 import com.coderdojowarehouse.dojochatapp.request.LoginRequest;
 import com.coderdojowarehouse.dojochatapp.response.BeginRegistrationResponse;
-import com.coderdojowarehouse.dojochatapp.response.CompleteRegistrationResponse;
 import com.coderdojowarehouse.dojochatapp.response.LoginResponse;
 
 import retrofit2.GsonConverterFactory;
@@ -23,7 +22,7 @@ public final class ChatClient {
     /**
      * The constructor is private because ChatClient is a singleton and the only way get the
      * ChatClient object is by calling {@link #getInstance}.
-     *
+     * <p/>
      * The constructor is responsible for configuring <a href="http://square.github.io/retrofit/">Retrofit</a>
      * and creating objects services from interfaces.
      */
@@ -40,6 +39,7 @@ public final class ChatClient {
 
     /**
      * This factory method
+     *
      * @return
      */
     public static final ChatClient getInstance() {
@@ -54,7 +54,6 @@ public final class ChatClient {
     }
 
     /**
-     *
      * @param fullName
      * @param nickname
      * @param emailAddress
@@ -67,7 +66,6 @@ public final class ChatClient {
     }
 
     /**
-     *
      * @param request
      * @return
      */
@@ -76,29 +74,26 @@ public final class ChatClient {
     }
 
     /**
-     *
      * @param token
      * @param password
      * @return
      */
-    public Observable<CompleteRegistrationResponse> completeRegistration(final String token,
-                                                                         final String password) {
+    public Observable<SimpleResponse> completeRegistration(final String token,
+                                                           final String password) {
         return completeRegistration(token, new CompleteRegistrationRequest(password));
     }
 
     /**
-     *
      * @param token
      * @param request
      * @return
      */
-    public Observable<CompleteRegistrationResponse> completeRegistration(final String token,
-                                                                         final CompleteRegistrationRequest request) {
+    public Observable<SimpleResponse> completeRegistration(final String token,
+                                                           final CompleteRegistrationRequest request) {
         return registrationService.complete(token, request);
     }
 
     /**
-     *
      * @param username
      * @param password
      * @return
@@ -109,7 +104,6 @@ public final class ChatClient {
     }
 
     /**
-     *
      * @param request
      * @return
      */
@@ -118,7 +112,6 @@ public final class ChatClient {
     }
 
     /**
-     *
      * @param token
      * @return
      */

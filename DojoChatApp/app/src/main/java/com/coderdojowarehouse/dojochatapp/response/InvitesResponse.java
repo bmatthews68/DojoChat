@@ -4,7 +4,7 @@ import com.coderdojowarehouse.dojochatapp.model.Invite;
 
 import java.util.List;
 
-public class InvitesResponse {
+public final class InvitesResponse {
 
     private List<Invite> invites;
 

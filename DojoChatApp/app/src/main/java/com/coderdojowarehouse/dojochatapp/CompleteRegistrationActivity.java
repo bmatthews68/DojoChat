@@ -7,9 +7,8 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.btmatthews.rest.core.client.Response;
+import com.btmatthews.rest.core.client.SimpleResponse;
 import com.coderdojowarehouse.dojochatapp.api.ChatClient;
-import com.coderdojowarehouse.dojochatapp.response.CompleteRegistrationResponse;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -18,7 +17,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class CompleteRegistrationActivity extends AppCompatActivity {
+public final class CompleteRegistrationActivity extends AppCompatActivity {
 
     private static final String TAG = "CompleteRegistration";
 
@@ -46,7 +45,7 @@ public class CompleteRegistrationActivity extends AppCompatActivity {
                         passwordText.getText().toString())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<CompleteRegistrationResponse>() {
+                .subscribe(new Observer<SimpleResponse>() {
                     @Override
                     public void onCompleted() {
                     }
@@ -58,7 +57,7 @@ public class CompleteRegistrationActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(final CompleteRegistrationResponse response) {
+                    public void onNext(final SimpleResponse response) {
                         if (response.isOk()) {
                             // TODO Should we do a notification
                             final Intent intent = new Intent(CompleteRegistrationActivity.this, LoginActivity.class);

@@ -2,7 +2,7 @@ package com.coderdojowarehouse.dojochatapp.response;
 
 import com.btmatthews.rest.core.client.AbstractResponse;
 
-public class InviteFriendResponse extends AbstractResponse {
+public final class InviteFriendResponse extends AbstractResponse {
 
     private String invite;
 

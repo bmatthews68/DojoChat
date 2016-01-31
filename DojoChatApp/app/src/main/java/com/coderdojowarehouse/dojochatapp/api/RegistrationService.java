@@ -1,9 +1,9 @@
 package com.coderdojowarehouse.dojochatapp.api;
 
+import com.btmatthews.rest.core.client.SimpleResponse;
 import com.coderdojowarehouse.dojochatapp.request.BeginRegistrationRequest;
 import com.coderdojowarehouse.dojochatapp.request.CompleteRegistrationRequest;
 import com.coderdojowarehouse.dojochatapp.response.BeginRegistrationResponse;
-import com.coderdojowarehouse.dojochatapp.response.CompleteRegistrationResponse;
 
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -17,5 +17,5 @@ public interface RegistrationService {
     Observable<BeginRegistrationResponse> begin(@Body BeginRegistrationRequest request);
 
     @PUT("/api/registration/{token}")
-    Observable<CompleteRegistrationResponse> complete(@Path("token") String token, @Body CompleteRegistrationRequest request);
+    Observable<SimpleResponse> complete(@Path("token") String token, @Body CompleteRegistrationRequest request);
 }
